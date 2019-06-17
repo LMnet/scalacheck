@@ -4,9 +4,9 @@ val scalaMajorVersion = SettingKey[Int]("scalaMajorVersion")
 
 scalaVersionSettings
 
-lazy val versionNumber = "1.14.2"
+lazy val versionNumber = "1.14.1-2gis-market-1"
 
-lazy val isRelease = false
+lazy val isRelease = true
 
 lazy val travisCommit = Option(System.getenv().get("TRAVIS_COMMIT"))
 
@@ -112,11 +112,19 @@ lazy val sharedSettings = MimaSettings.settings ++ scalaVersionSettings ++ Seq(
     else Set("org.scalacheck" %%% "scalacheck" % "1.14.0")
   },
 
+//  publishTo := {
+//    val nexus = "https://oss.sonatype.org/"
+//    val (name, path) = if (isSnapshot.value) ("snapshots", "content/repositories/snapshots")
+//                       else ("releases", "service/local/staging/deploy/maven2")
+//    Some(name at nexus + path)
+//  },
+
   publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    val (name, path) = if (isSnapshot.value) ("snapshots", "content/repositories/snapshots")
-                       else ("releases", "service/local/staging/deploy/maven2")
-    Some(name at nexus + path)
+    val artifactory = "https://artifactory.web-staging.2gis.ru/artifactory/"
+    if (version.value.trim.endsWith("SNAPSHOT"))
+      Some("snapshots" at artifactory + "libs-snapshot-local")
+    else
+      Some("releases" at artifactory + "libs-release-local")
   },
 
   publishMavenStyle := true,
